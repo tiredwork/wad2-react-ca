@@ -87,24 +87,26 @@ export const getMovie = (args) => {
     })
     .catch((error) => {
       throw error
-   });
-  };
+       });
+      };
 
   export const getUpcomingMovies = () => {
-    return fetch(
-      `https://api.themoviedb.org/3/movie/upcoming?api_key=${import.meta.env.VITE_TMDB_KEY}&language=en-US&page=1`
-    ).then( (response) => {
+    const today = new Date().toISOString().split("T")[0];
+    return fetch( // fetch upcoming popular movies released after today
+      `https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_TMDB_KEY}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&primary_release_date.gte=${today}`
+    )
+      .then((response) => {
       if (!response.ok) {
         return response.json().then((error) => {
-          throw new Error(error.status_message || "Something went wrong");
+        throw new Error(error.status_message || "Something went wrong");
         });
       }
       return response.json();
-    })
-    .catch((error) => {
-      throw error
-   });
-  };
+      })
+      .catch((error) => {
+      throw error;
+      });
+    };
 
   export const getMovieProviders = ({ queryKey }) => {
     const [, idPart] = queryKey;
