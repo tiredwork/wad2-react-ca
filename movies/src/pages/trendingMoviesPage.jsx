@@ -3,20 +3,12 @@ import PageTemplate from '../components/templateMovieListPage';
 import { useQuery } from '@tanstack/react-query';
 import Spinner from '../components/spinner';
 import AddToFavoritesIcon from "../components/cardIcons/addToFavorites";
+import { getTrendingMovies } from '../api/tmdb-api';
 
 const TrendingMoviesPage = (props) => {
 	const { data, error, isPending, isError } = useQuery({
 		queryKey: ['trending'],
-		queryFn: async () => {
-			const res = await fetch(
-				`https://api.themoviedb.org/3/trending/movie/week?api_key=${import.meta.env.VITE_TMDB_KEY}`
-			);
-			if (!res.ok) {
-				const err = await res.json().catch(() => ({}));
-				throw new Error(err.status_message || 'Something went wrong');
-			}
-			return res.json();
-		},
+		queryFn: getTrendingMovies,
 	});
 
 	if (isPending) return <Spinner />;

@@ -3,20 +3,12 @@ import PageTemplate from '../components/templateMovieListPage';
 import { useQuery } from '@tanstack/react-query';
 import Spinner from '../components/spinner';
 import AddToFavoritesIcon from "../components/cardIcons/addToFavorites";
+import { getTopRatedMovies } from '../api/tmdb-api';
 
 const TopRatedMoviesPage = (props) => {
 	const { data, error, isPending, isError } = useQuery({
 		queryKey: ['top_rated'],
-		queryFn: async () => {
-			const res = await fetch(
-				`https://api.themoviedb.org/3/movie/top_rated?api_key=${import.meta.env.VITE_TMDB_KEY}&language=en-US&page=1`
-			);
-			if (!res.ok) {
-				const err = await res.json().catch(() => ({}));
-				throw new Error(err.status_message || 'Something went wrong');
-			}
-			return res.json();
-		},
+		queryFn: getTopRatedMovies,
 	});
 
 	if (isPending) return <Spinner />;
