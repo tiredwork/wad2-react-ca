@@ -1,88 +1,53 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 export const MoviesContext = React.createContext(null);
 
-const safeParse = (val) => {
-  try {
-    return JSON.parse(val);
-  } catch (e) {
-    return null;
-  }
-};
-
 const MoviesContextProvider = (props) => {
-  // initialize favorites from localStorage (support both id arrays and movie object arrays)
-  const initialFavorites = (() => {
-    if (typeof window === 'undefined') return [];
-    const raw = safeParse(localStorage.getItem('favorites') || '[]') || [];
-    // raw might be array of ids or array of movie objects
-    return raw
-      .map((item) => (typeof item === 'number' ? item : item && item.id))
-      .filter((id) => typeof id === 'number');
-  })();
-
-  const [favorites, setFavorites] = useState(initialFavorites);
-
-  useEffect(() => {
-    // persist favorites as array of ids
-    try {
-      localStorage.setItem('favorites', JSON.stringify(favorites));
-    } catch (e) {
-      // ignore localStorage errors
-    }
-  }, [favorites]);
+  const [favorites, setFavorites] = useState( [] )
+  
 
   const addToFavorites = (movie) => {
-    setFavorites((prev) => {
-      if (!prev.includes(movie.id)) {
-        return [...prev, movie.id];
-      }
-      return prev;
-    });
-  };
-
-  const removeFromFavorites = (movie) => {
-    setFavorites((prev) => prev.filter((mId) => mId !== movie.id));
-  };
-
-  // Playlist: store array of movie ids (mirror favorites behavior)
-  const initialPlaylist = (() => {
-    if (typeof window === 'undefined') return [];
-    const raw = safeParse(localStorage.getItem('playlist') || '[]') || [];
-    return raw
-      .map((item) => (typeof item === 'number' ? item : item && item.id))
-      .filter((id) => typeof id === 'number');
-  })();
-
-  const [playlist, setPlaylist] = useState(initialPlaylist);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem('playlist', JSON.stringify(playlist));
-    } catch (e) {
-      // ignore
+    let newFavorites = [];
+    if (!favorites.includes(movie.id)){
+      newFavorites = [...favorites, movie.id];
     }
-  }, [playlist]);
+    else{
+      newFavorites = [...favorites];
+    }
+    setFavorites(newFavorites)
+  };
+  
+  const removeFromFavorites = (movie) => {
+    setFavorites( favorites.filter(
+      (mId) => mId !== movie.id
+    ) )
+  };
+  
+  const [playlist, setPlaylist] = useState( [] )
 
   const addToPlaylist = (movie) => {
-    setPlaylist((prev) => {
-      if (!prev.includes(movie.id)) {
-        return [...prev, movie.id];
-      }
-      return prev;
-    });
+    let newPlaylist = [];
+    if (!playlist.includes(movie.id)){
+      newPlaylist = [...playlist, movie.id];
+    } else {
+      newPlaylist = [...playlist];
+    }
+    setPlaylist(newPlaylist);
   };
 
   const removeFromPlaylist = (movie) => {
-    setPlaylist((prev) => prev.filter((mId) => mId !== movie.id));
+    setPlaylist( playlist.filter(
+      (mId) => mId !== movie.id
+    ) )
   };
-
-  const [myReviews, setMyReviews] = useState({});
+ 
+  const [myReviews, setMyReviews] = useState( {} ) 
   const addReview = (movie, review) => {
-    setMyReviews({ ...myReviews, [movie.id]: review });
+    setMyReviews( {...myReviews, [movie.id]: review } )
   };
-
-  return (
+  //console.log(myReviews);
+ 
+ return (
     <MoviesContext.Provider
       value={{
         favorites,
@@ -97,6 +62,6 @@ const MoviesContextProvider = (props) => {
       {props.children}
     </MoviesContext.Provider>
   );
-};
-
+}
+ 
 export default MoviesContextProvider;

@@ -15,6 +15,7 @@ import { Link } from "react-router";
 import Avatar from '@mui/material/Avatar';
 import React, { useContext  } from "react";
 import { MoviesContext } from "../../contexts/moviesContext";
+import AddToPlaylistIcon from "../cardIcons/playlistAdd";
 
 export default function MovieCard({ movie, action }) {
   const { favorites, addToFavorites } = useContext(MoviesContext);
@@ -74,6 +75,7 @@ export default function MovieCard({ movie, action }) {
       <CardActions disableSpacing>
       
         {action(movie)}
+        <AddToPlaylistIcon movie={movie} />
       
         <Link to={`/movies/${movie.id}`}>
           <Button variant="outlined" size="medium" color="primary">
