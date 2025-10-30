@@ -15,8 +15,8 @@ import NowPlayingMoviesPage from './pages/nowPlayingMoviesPage'
 import TopRatedMoviesPage from './pages/topRatedMoviesPage'
 import PopularMoviesPage from './pages/popularMoviesPage'
 import TrendingMoviesPage from './pages/trendingMoviesPage'
-import MovieProvidersPage from './pages/movieProvidersPage.jsx';
-import SimilarMoviesPage from './pages/similarMoviesPage.jsx';
+import MovieProvidersPage from './pages/movieProvidersPage'
+import SimilarMoviesPage from './pages/similarMoviesPage'
 
 
 
