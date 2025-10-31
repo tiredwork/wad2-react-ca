@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -6,6 +6,9 @@ import IconButton from "@mui/material/IconButton";
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
+import Collapse from '@mui/material/Collapse';
+import CloseIcon from '@mui/icons-material/Close';
+import Box from '@mui/material/Box';
 import Button from "@mui/material/Button";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -26,6 +29,8 @@ const SiteHeader = () => {
   
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const inputRef = useRef(null);
 
     const menuOptions = [
     { label: "Home", path: "/" },
@@ -36,7 +41,9 @@ const SiteHeader = () => {
     { label: "Trending", path: "/trending" },
     { label: "Top Rated", path: "/top_rated" },
     { label: "Now Playing", path: "/now_playing" }, 
-  ];  const handleMenuSelect = (pageURL) => {
+  ];  
+  
+  const handleMenuSelect = (pageURL) => {
     setAnchorEl(null);
     navigate(pageURL);
   };
@@ -56,6 +63,16 @@ const SiteHeader = () => {
       // if empty, navigate to home
       navigate('/');
     }
+    setSearchOpen(false);
+  };
+
+  const openSearch = () => {
+    setSearchOpen(true);
+    setTimeout(() => inputRef.current?.focus(), 150);
+  };
+
+  const closeSearch = () => {
+    setSearchOpen(false);
   };
 
   return (
@@ -68,73 +85,86 @@ const SiteHeader = () => {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             All you ever wanted to know about Movies!
           </Typography>
-          <form onSubmit={handleSearchSubmit}>
-            <TextField
-              size="small"
-              placeholder="Search movies..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              slotProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton type="submit" edge="end" aria-label="search">
-                      <SearchIcon />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ backgroundColor: 'white', borderRadius: 1, mr: 2, minWidth: 200 }}
-            />
-          </form>
-            {isMobile ? (
-              <>
-                <IconButton
-                  aria-label="menu"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleMenu}
-                  color="inherit"
-                >
-                  <MenuIcon />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
+
+          <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
+            <IconButton aria-label="open search" color="inherit" onClick={openSearch}>
+              <SearchIcon />
+            </IconButton>
+            <Collapse in={searchOpen} orientation="horizontal">
+              <form onSubmit={handleSearchSubmit} style={{ display: 'flex', alignItems: 'center' }}>
+                <TextField
+                  size="small"
+                  placeholder="Search movies..."
+                  inputRef={inputRef}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton type="submit" edge="end" aria-label="search">
+                          <SearchIcon />
+                        </IconButton>
+                        <IconButton onClick={closeSearch} edge="end" aria-label="close-search">
+                          <CloseIcon />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
                   }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={open}
-                  onClose={() => setAnchorEl(null)}
-                >
-                  {menuOptions.map((opt) => (
-                    <MenuItem
-                      key={opt.label}
-                      onClick={() => handleMenuSelect(opt.path)}
-                    >
-                      {opt.label}
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </>
-            ) : (
-              <>
+                  sx={{ backgroundColor: 'white', borderRadius: 1, ml: 1, minWidth: 200 }}
+                />
+              </form>
+            </Collapse>
+          </Box>
+
+          {isMobile ? (
+            <>
+              <IconButton
+                aria-label="menu"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={open}
+                onClose={() => setAnchorEl(null)}
+              >
                 {menuOptions.map((opt) => (
-                  <Button
+                  <MenuItem
                     key={opt.label}
-                    color="inherit"
                     onClick={() => handleMenuSelect(opt.path)}
                   >
                     {opt.label}
-                  </Button>
+                  </MenuItem>
                 ))}
-              </>
-            )}
+              </Menu>
+            </>
+          ) : (
+            <>
+              {menuOptions.map((opt) => (
+                <Button
+                  key={opt.label}
+                  color="inherit"
+                  onClick={() => handleMenuSelect(opt.path)}
+                >
+                  {opt.label}
+                </Button>
+              ))}
+            </>
+          )}
         </Toolbar>
       </AppBar>
       <Offset />
