@@ -207,3 +207,28 @@ export const getMovie = (args) => {
       throw error
    });
   };
+
+
+  // Search movies by query string
+  export const getMoviesBySearch = ({ queryKey }) => {
+    const [, searchPart] = queryKey;
+    const { query, page = 1 } = searchPart;
+        // if no query provided, return an empty result structure to avoid errors
+    if (!query || query.trim() === "") {
+      return Promise.resolve({ page: 1, results: [], total_pages: 0, total_results: 0 });
+    }
+    const q = encodeURIComponent(query);
+    return fetch(
+      `https://api.themoviedb.org/3/search/movie?api_key=${import.meta.env.VITE_TMDB_KEY}&language=en-US&query=${q}&page=${page}&include_adult=false`
+    ).then((response) => {
+      if (!response.ok) {
+        return response.json().then((error) => {
+          throw new Error(error.status_message || "Something went wrong");
+        });
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      throw error
+    });
+  };

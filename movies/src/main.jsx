@@ -18,6 +18,7 @@ import TrendingMoviesPage from './pages/trendingMoviesPage'
 import MovieProvidersPage from './pages/movieProvidersPage'
 import SimilarMoviesPage from './pages/similarMoviesPage'
 import PlaylistsPage from './pages/playlistsPage'
+import SearchResultsPage from './pages/searchResultsPage'
 
 
 
@@ -48,6 +49,7 @@ const App = () => {
             <Route path="/popular" element={ <PopularMoviesPage /> } />
             <Route path="/trending" element={ <TrendingMoviesPage /> } />
             <Route path="/playlists" element={ <PlaylistsPage /> } />
+            <Route path="/search" element={ <SearchResultsPage /> } />
             <Route path="/" element={<HomePage />} />
             <Route path="*" element={ <Navigate to="/" /> } />
             <Route path="/reviews/form" element={ <AddMovieReviewPage /> } />

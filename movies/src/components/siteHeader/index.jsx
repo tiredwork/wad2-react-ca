@@ -3,6 +3,9 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchIcon from '@mui/icons-material/Search';
 import Button from "@mui/material/Button";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -22,6 +25,7 @@ const SiteHeader = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
 
     const menuOptions = [
     { label: "Home", path: "/" },
@@ -41,6 +45,19 @@ const SiteHeader = () => {
     setAnchorEl(event.currentTarget);
   };
 
+  // https://github.com/tvt23spo-group17/movieapp/blob/main/movieapp/src/components/tmdb.js
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    const q = (searchQuery || "").trim();
+    if (q.length > 0) {
+      // navigate to search results page
+      navigate(`/search?q=${encodeURIComponent(q)}`);
+    } else {
+      // if empty, navigate to home
+      navigate('/');
+    }
+  };
+
   return (
     <>
       <AppBar position="fixed" color="secondary">
@@ -51,6 +68,24 @@ const SiteHeader = () => {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             All you ever wanted to know about Movies!
           </Typography>
+          <form onSubmit={handleSearchSubmit}>
+            <TextField
+              size="small"
+              placeholder="Search movies..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              slotProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton type="submit" edge="end" aria-label="search">
+                      <SearchIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ backgroundColor: 'white', borderRadius: 1, mr: 2, minWidth: 200 }}
+            />
+          </form>
             {isMobile ? (
               <>
                 <IconButton
