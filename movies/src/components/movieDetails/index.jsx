@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Chip from "@mui/material/Chip";
+import Avatar from "@mui/material/Avatar";
 import Paper from "@mui/material/Paper";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MonetizationIcon from "@mui/icons-material/MonetizationOn";
@@ -40,7 +41,7 @@ const [drawerOpen, setDrawerOpen] = useState(false);
         <li>
           <Chip label="Genres" sx={{...chip}} color="primary" />
         </li>
-        {movie.genres.map((g) => (
+        {(movie.genres || []).map((g) => (
           <li key={g.name}>
             <Chip label={g.name} sx={{...chip}} />
           </li>
@@ -64,13 +65,28 @@ const [drawerOpen, setDrawerOpen] = useState(false);
         <li>
           <Chip label="Production Countries" sx={{...chip}} color="primary" />
         </li>
-        {movie.production_countries.map((c) => (
+        {(movie.production_countries || []).map((c) => (
           <li key={c.name}>
             <Chip label={c.name} sx={{...chip}} />
           </li>
         ))}
       </Paper>
 
+      <Paper component="ul" sx={{...root}}>
+        <li>
+          <Chip label="Production Companies" sx={{...chip}} color="primary" />
+        </li>
+          {(movie.production_companies || []).map((p) => (
+            <li key={p.id || p.name}>
+              <Chip
+                avatar={p.logo_path ? <Avatar alt={p.name} src={`https://image.tmdb.org/t/p/w92${p.logo_path}`} /> : undefined}
+                label={p.name}
+                sx={{...chip}}
+              />
+            </li>
+          ))}
+        </Paper>
+      
       <Fab
         color="secondary"
         variant="extended"
