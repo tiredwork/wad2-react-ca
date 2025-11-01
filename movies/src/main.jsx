@@ -20,8 +20,6 @@ import SimilarMoviesPage from './pages/similarMoviesPage'
 import PlaylistsPage from './pages/playlistsPage'
 import SearchResultsPage from './pages/searchResultsPage'
 
-
-
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
