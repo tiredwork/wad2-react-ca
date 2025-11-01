@@ -10,8 +10,7 @@ import Fab from "@mui/material/Fab";
 import Typography from "@mui/material/Typography";
 import Drawer from "@mui/material/Drawer";
 import MovieReviews from "../movieReviews"
-
-
+import Tooltip from "@mui/material/Tooltip";
 
 const root = {
     display: "flex",
@@ -39,50 +38,70 @@ const [drawerOpen, setDrawerOpen] = useState(false);
 
       <Paper component="ul" sx={{...root}}> 
         <li>
-          <Chip label="Genres" sx={{...chip}} color="primary" />
+          <Tooltip title="Genres">
+            <Chip label="Genres" sx={{...chip}} color="primary" />
+          </Tooltip>
         </li>
         {(movie.genres || []).map((g) => (
           <li key={g.name}>
-            <Chip label={g.name} sx={{...chip}} />
+            <Tooltip title={`Genre: ${g.name}`}>
+              <Chip label={g.name} sx={{...chip}} />
+            </Tooltip>
           </li>
         ))}
       </Paper>
 
       <Paper component="ul" sx={{...root}}>
-        <Chip icon={<AccessTimeIcon />} label={`${movie.runtime} min.`} />
-        <Chip
-          icon={<MonetizationIcon />}
-          label={`${movie.revenue.toLocaleString()}`}
-        />
-        <Chip
-          icon={<StarRate />}
-          label={`${movie.vote_average} (${movie.vote_count})`}
-        />
-        <Chip label={`Released: ${movie.release_date}`} />
+        <Tooltip title={`Runtime: ${movie.runtime} minutes`}>
+          <Chip icon={<AccessTimeIcon />} label={`${movie.runtime} min.`} />
+        </Tooltip>
+        <Tooltip title={`Revenue: $${movie.revenue.toLocaleString()}`}>
+          <Chip
+            icon={<MonetizationIcon />}
+            label={`${movie.revenue.toLocaleString()}`}
+          />
+        </Tooltip>
+        <Tooltip title={`Rating: ${movie.vote_average} (${movie.vote_count})`}>
+          <Chip
+            icon={<StarRate />}
+            label={`${movie.vote_average} (${movie.vote_count})`}
+          />
+        </Tooltip>
+        <Tooltip title={`Released: ${movie.release_date}`}>
+          <Chip label={`Released: ${movie.release_date}`} />
+        </Tooltip>
       </Paper>
 
       <Paper component="ul" sx={{...root}}>
         <li>
-          <Chip label="Production Countries" sx={{...chip}} color="primary" />
+          <Tooltip title="Production Countries">
+            <Chip label="Production Countries" sx={{...chip}} color="primary" />
+          </Tooltip>
         </li>
         {(movie.production_countries || []).map((c) => (
           <li key={c.name}>
-            <Chip label={c.name} sx={{...chip}} />
+            <Tooltip title={`Country: ${c.name}`}>
+              <Chip label={c.name} sx={{...chip}} />
+            </Tooltip>
           </li>
         ))}
       </Paper>
 
       <Paper component="ul" sx={{...root}}>
         <li>
-          <Chip label="Production Companies" sx={{...chip}} color="primary" />
+          <Tooltip title="Production Companies">
+            <Chip label="Production Companies" sx={{...chip}} color="primary" />
+          </Tooltip>
         </li>
           {(movie.production_companies || []).map((p) => (
             <li key={p.id || p.name}>
-              <Chip
-                avatar={p.logo_path ? <Avatar alt={p.name} src={`https://image.tmdb.org/t/p/w92${p.logo_path}`} /> : undefined}
-                label={p.name}
-                sx={{...chip}}
-              />
+              <Tooltip title={`Company: ${p.name}`}>
+                <Chip
+                  avatar={p.logo_path ? <Avatar alt={p.name} src={`https://image.tmdb.org/t/p/w92${p.logo_path}`} /> : undefined}
+                  label={p.name}
+                  sx={{...chip}}
+                />
+              </Tooltip>
             </li>
           ))}
         </Paper>
