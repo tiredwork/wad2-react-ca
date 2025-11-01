@@ -13,6 +13,7 @@ import Button from "@mui/material/Button";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useNavigate } from "react-router";
 import { styled } from '@mui/material/styles';
 import { useTheme } from "@mui/material/styles";
@@ -21,18 +22,20 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 
 const SiteHeader = () => {
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null); // mobile menu
+  const [moreAnchor, setMoreAnchor] = useState(null); // overflow menu
   const open = Boolean(anchorEl);
+  const moreOpen = Boolean(moreAnchor);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  
+
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const inputRef = useRef(null);
 
-    const menuOptions = [
+  const menuOptions = [
     { label: "Home", path: "/" },
     { label: "Favorites", path: "/movies/favorites" },
     { label: "Playlists", path: "/playlists" },
@@ -40,27 +43,27 @@ const SiteHeader = () => {
     { label: "Popular", path: "/popular" },
     { label: "Trending", path: "/trending" },
     { label: "Top Rated", path: "/top_rated" },
-    { label: "Now Playing", path: "/now_playing" }, 
-  ];  
-  
+    { label: "Now Playing", path: "/now_playing" },
+  ];
+
   const handleMenuSelect = (pageURL) => {
     setAnchorEl(null);
+    setMoreAnchor(null);
     navigate(pageURL);
   };
 
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const handleMobileMenu = (event) => setAnchorEl(event.currentTarget);
+  const handleMobileClose = () => setAnchorEl(null);
 
-  // https://github.com/tvt23spo-group17/movieapp/blob/main/movieapp/src/components/tmdb.js
+  const handleMoreOpen = (e) => setMoreAnchor(e.currentTarget);
+  const handleMoreClose = () => setMoreAnchor(null);
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     const q = (searchQuery || "").trim();
     if (q.length > 0) {
-      // navigate to search results page
       navigate(`/search?q=${encodeURIComponent(q)}`);
     } else {
-      // if empty, navigate to home
       navigate('/');
     }
     setSearchOpen(false);
@@ -70,23 +73,20 @@ const SiteHeader = () => {
     setSearchOpen(true);
     setTimeout(() => inputRef.current?.focus(), 150);
   };
-
-  const closeSearch = () => {
-    setSearchOpen(false);
-  };
+  const closeSearch = () => setSearchOpen(false);
 
   return (
     <>
       <AppBar position="fixed" color="secondary">
         <Toolbar>
-          <Typography variant="h4" sx={{ flexGrow: 1 }}>
-            TMDB Client
-          </Typography>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            All you ever wanted to know about Movies!
-          </Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'column', flexShrink: 0, mr: 2 }}>
+            <Typography variant="h6">TMDB Client</Typography>
+            <Typography variant="caption">All you ever wanted to know about Movies!</Typography>
+          </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
+          <Box sx={{ flexGrow: 1 }} />
+
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <IconButton aria-label="open search" color="inherit" onClick={openSearch}>
               <SearchIcon />
             </IconButton>
@@ -122,7 +122,7 @@ const SiteHeader = () => {
                 aria-label="menu"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
-                onClick={handleMenu}
+                onClick={handleMobileMenu}
                 color="inherit"
               >
                 <MenuIcon />
@@ -130,31 +130,20 @@ const SiteHeader = () => {
               <Menu
                 id="menu-appbar"
                 anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
                 keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
+                transformOrigin={{ vertical: "top", horizontal: "right" }}
                 open={open}
-                onClose={() => setAnchorEl(null)}
+                onClose={handleMobileClose}
               >
                 {menuOptions.map((opt) => (
-                  <MenuItem
-                    key={opt.label}
-                    onClick={() => handleMenuSelect(opt.path)}
-                  >
-                    {opt.label}
-                  </MenuItem>
+                  <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>{opt.label}</MenuItem>
                 ))}
               </Menu>
             </>
           ) : (
             <>
-              {menuOptions.map((opt) => (
+              {menuOptions.slice(0, 3).map((opt) => (
                 <Button
                   key={opt.label}
                   color="inherit"
@@ -163,6 +152,31 @@ const SiteHeader = () => {
                   {opt.label}
                 </Button>
               ))}
+
+              {menuOptions.length > 3 && (
+                <>
+                  <IconButton
+                    color="inherit"
+                    onClick={handleMoreOpen}
+                    aria-label="more"
+                  >
+                    <MoreVertIcon />
+                  </IconButton>
+                  <Menu
+                    anchorEl={moreAnchor}
+                    open={moreOpen}
+                    onClose={handleMoreClose}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                  >
+                    {menuOptions.slice(3).map((opt) => (
+                      <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>
+                        {opt.label}
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </>
+              )}
             </>
           )}
         </Toolbar>
