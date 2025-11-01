@@ -5,6 +5,8 @@ import PageTemplate from "../components/templateMoviePage";
 import { getMovie } from '../api/tmdb-api'
 import { useQuery } from '@tanstack/react-query';
 import Spinner from '../components/spinner'
+import SimilarMovies from "../components/similarMovies";
+import AddToFavoritesIcon from "../components/cardIcons/addToFavorites";
 // import useMovie from "../hooks/useMovie";   Redundant
 
 
@@ -30,6 +32,10 @@ const MoviePage = (props) => {
         <>
           <PageTemplate movie={movie}>
             <MovieDetails movie={movie} />
+            <SimilarMovies
+              movieId={id}
+              action={(m) => <AddToFavoritesIcon movie={m} />}
+            />
           </PageTemplate>
         </>
       ) : (
