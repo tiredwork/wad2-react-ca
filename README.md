@@ -12,7 +12,7 @@ This is a simple React application that demonstrates the use of React components
 - Uses TMDB API to fetch movie data
 
 ## Screenshots
-![Screenshot of Movie Details Page](./img/moviedetails.png)
+![Screenshot of Movie Details Page](./img/moviedetails.jpeg)
 ![Screenshot of Search Page](./img/searchpage.png)
 
 ## Installation
